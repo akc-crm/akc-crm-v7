@@ -127,13 +127,7 @@ function AuthScreen({users,setUsers,onLogin,branches}){
         <button className="primary full">Đăng nhập</button>
         <button type="button" className="ghost full" onClick={()=>{setMode("register");setError("");}}>Đăng ký tài khoản mới</button>
         <div className="demo-box">
-          <b>Tài khoản demo:</b>
-          <span>admin@akc.vn / 123456</span>
-          <span>manager.caugiay@akc.vn / 123456</span>
-          <span>maianh@akc.vn / 123456</span>
-          <span>tuan@akc.vn / 123456</span>
-        </div>
-      </form> : <form onSubmit={doRegister}>
+                </form> : <form onSubmit={doRegister}>
         <label>Họ tên<input value={reg.name} onChange={e=>setReg({...reg,name:e.target.value})} required/></label>
         <label>Số điện thoại<input value={reg.phone} onChange={e=>setReg({...reg,phone:e.target.value})}/></label>
         <label>Email<input type="email" value={reg.email} onChange={e=>setReg({...reg,email:e.target.value})} required/></label>

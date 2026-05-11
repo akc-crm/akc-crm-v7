@@ -127,7 +127,9 @@ function AuthScreen({users,setUsers,onLogin,branches}){
         <button className="primary full">Đăng nhập</button>
         <button type="button" className="ghost full" onClick={()=>{setMode("register");setError("");}}>Đăng ký tài khoản mới</button>
         <div className="demo-box">
-                </form> : <form onSubmit={doRegister}>
+                </form>
+) : (
+<form onSubmit={doRegister}>
         <label>Họ tên<input value={reg.name} onChange={e=>setReg({...reg,name:e.target.value})} required/></label>
         <label>Số điện thoại<input value={reg.phone} onChange={e=>setReg({...reg,phone:e.target.value})}/></label>
         <label>Email<input type="email" value={reg.email} onChange={e=>setReg({...reg,email:e.target.value})} required/></label>
@@ -136,7 +138,8 @@ function AuthScreen({users,setUsers,onLogin,branches}){
         {error && <div className="error">{error}</div>}
         <button className="primary full">Gửi đăng ký</button>
         <button type="button" className="ghost full" onClick={()=>{setMode("login");setError("");}}>Quay lại đăng nhập</button>
-      </form>}
+      </form>
+)}
     </div>
   </div>
 }

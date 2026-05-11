@@ -76,26 +76,58 @@ function AuthScreen({users,setUsers,onLogin,branches}){
   const [mode,setMode]=useState("login");
   const [error,setError]=useState("");
   const [login,setLogin]=useState({email:"admin@akc.vn", password:"123456"});
-  const [reg,setReg]=useState({name:"", phone:"", email:"", password:"", branch:branches[0] || "AKC Cầu Giấy"});
+  const [reg,setReg]=useState({
+    name:"",
+    phone:"",
+    email:"",
+    password:"",
+    branch:branches[0] || "AKC Cầu Giấy"
+  });
 
   function doLogin(e){
     e.preventDefault();
     setError("");
-    const found = users.find(u => u.email.trim().toLowerCase() === login.email.trim().toLowerCase() && u.password === login.password);
-    if(!found){ setError("Sai email hoặc mật khẩu."); return; }
-    if(found.status === "pending"){ setError("Tài khoản đang chờ Admin duyệt."); return; }
-    if(found.status === "rejected"){ setError("Tài khoản đã bị từ chối."); return; }
-    if(found.active === false){ setError("Tài khoản đang bị khóa."); return; }
+
+    const found = users.find(
+      u =>
+        u.email.trim().toLowerCase() === login.email.trim().toLowerCase() &&
+        u.password === login.password
+    );
+
+    if(!found){
+      setError("Sai email hoặc mật khẩu.");
+      return;
+    }
+
+    if(found.status === "pending"){
+      setError("Tài khoản đang chờ Admin duyệt.");
+      return;
+    }
+
+    if(found.status === "rejected"){
+      setError("Tài khoản đã bị từ chối.");
+      return;
+    }
+
+    if(found.active === false){
+      setError("Tài khoản đang bị khóa.");
+      return;
+    }
+
     onLogin(found);
   }
 
   function doRegister(e){
     e.preventDefault();
     setError("");
-    if(users.some(u => u.email.trim().toLowerCase() === reg.email.trim().toLowerCase())){
+
+    if(users.some(
+      u => u.email.trim().toLowerCase() === reg.email.trim().toLowerCase()
+    )){
       setError("Email này đã tồn tại.");
       return;
     }
+
     const row = {
       id: Date.now(),
       name: reg.name.trim(),
@@ -109,38 +141,168 @@ function AuthScreen({users,setUsers,onLogin,branches}){
       active: false,
       created: today()
     };
+
     setUsers([row, ...users]);
+
     setMode("login");
-    setLogin({email: reg.email, password: reg.password});
+
+    setLogin({
+      email: reg.email,
+      password: reg.password
+    });
+
     setError("Đăng ký thành công. Tài khoản đang chờ Admin duyệt.");
   }
 
-  return <div className="login-wrap">
-    <div className="login-card">
-      <div className="logo big">AKC</div>
-      <h1>{mode === "login" ? "Đăng nhập AKC CRM" : "Đăng ký tài khoản"}</h1>
-      <p>{mode === "login" ? "Tài khoản phải được Admin duyệt mới đăng nhập được." : "Sau khi đăng ký, Admin sẽ phân quyền và kích hoạt tài khoản."}</p>
-      {mode === "login" ? <form onSubmit={doLogin}>
-        <label>Email<input value={login.email} onChange={e=>setLogin({...login,email:e.target.value})}/></label>
-        <label>Mật khẩu<input type="password" value={login.password} onChange={e=>setLogin({...login,password:e.target.value})}/></label>
-        {error && <div className={error.includes("thành công") ? "success" : "error"}>{error}</div>}
-        <button className="primary full">Đăng nhập</button>
-        <button type="button" className="ghost full" onClick={()=>{setMode("register");setError("");}}>Đăng ký tài khoản mới</button>
-                </form>
-) : (
-<form onSubmit={doRegister}>
-        <label>Họ tên<input value={reg.name} onChange={e=>setReg({...reg,name:e.target.value})} required/></label>
-        <label>Số điện thoại<input value={reg.phone} onChange={e=>setReg({...reg,phone:e.target.value})}/></label>
-        <label>Email<input type="email" value={reg.email} onChange={e=>setReg({...reg,email:e.target.value})} required/></label>
-        <label>Mật khẩu<input type="password" value={reg.password} onChange={e=>setReg({...reg,password:e.target.value})} required/></label>
-        <label>Cơ sở đăng ký<select value={reg.branch} onChange={e=>setReg({...reg,branch:e.target.value})}>{branches.map(b=><option key={b}>{b}</option>)}</select></label>
-        {error && <div className="error">{error}</div>}
-        <button className="primary full">Gửi đăng ký</button>
-        <button type="button" className="ghost full" onClick={()=>{setMode("login");setError("");}}>Quay lại đăng nhập</button>
-      </form>
-)}
+  return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="logo big">AKC</div>
+
+        <h1>
+          {mode === "login"
+            ? "Đăng nhập AKC CRM"
+            : "Đăng ký tài khoản"}
+        </h1>
+
+        <p>
+          {mode === "login"
+            ? "Tài khoản phải được Admin duyệt mới đăng nhập được."
+            : "Sau khi đăng ký, Admin sẽ phân quyền và kích hoạt tài khoản."}
+        </p>
+
+        {mode === "login" ? (
+          <form onSubmit={doLogin}>
+            <label>
+              Email
+              <input
+                value={login.email}
+                onChange={e =>
+                  setLogin({...login,email:e.target.value})
+                }
+              />
+            </label>
+
+            <label>
+              Mật khẩu
+              <input
+                type="password"
+                value={login.password}
+                onChange={e =>
+                  setLogin({...login,password:e.target.value})
+                }
+              />
+            </label>
+
+            {error && (
+              <div className={
+                error.includes("thành công")
+                  ? "success"
+                  : "error"
+              }>
+                {error}
+              </div>
+            )}
+
+            <button className="primary full">
+              Đăng nhập
+            </button>
+
+            <button
+              type="button"
+              className="ghost full"
+              onClick={()=>{
+                setMode("register");
+                setError("");
+              }}
+            >
+              Đăng ký tài khoản mới
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={doRegister}>
+            <label>
+              Họ tên
+              <input
+                value={reg.name}
+                onChange={e =>
+                  setReg({...reg,name:e.target.value})
+                }
+                required
+              />
+            </label>
+
+            <label>
+              Số điện thoại
+              <input
+                value={reg.phone}
+                onChange={e =>
+                  setReg({...reg,phone:e.target.value})
+                }
+              />
+            </label>
+
+            <label>
+              Email
+              <input
+                type="email"
+                value={reg.email}
+                onChange={e =>
+                  setReg({...reg,email:e.target.value})
+                }
+                required
+              />
+            </label>
+
+            <label>
+              Mật khẩu
+              <input
+                type="password"
+                value={reg.password}
+                onChange={e =>
+                  setReg({...reg,password:e.target.value})
+                }
+                required
+              />
+            </label>
+
+            <label>
+              Cơ sở đăng ký
+              <select
+                value={reg.branch}
+                onChange={e =>
+                  setReg({...reg,branch:e.target.value})
+                }
+              >
+                {branches.map(b =>
+                  <option key={b}>{b}</option>
+                )}
+              </select>
+            </label>
+
+            {error && (
+              <div className="error">{error}</div>
+            )}
+
+            <button className="primary full">
+              Gửi đăng ký
+            </button>
+
+            <button
+              type="button"
+              className="ghost full"
+              onClick={()=>{
+                setMode("login");
+                setError("");
+              }}
+            >
+              Quay lại đăng nhập
+            </button>
+          </form>
+        )}
+      </div>
     </div>
-  </div>
+  );
 }
 
 function App(){
